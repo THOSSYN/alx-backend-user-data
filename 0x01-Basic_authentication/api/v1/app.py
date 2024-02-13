@@ -30,7 +30,7 @@ def before_request():
     """Verify user's credential before each request"""
     if auth is None:
         return
-    excluded = ['/api/v1/status/', '/api/v1/unauthorized/',
+    excluded = ['/api/v1/stat*', '/api/v1/unauthorized/',
                 '/api/v1/forbidden/']
     ret_value = auth.require_auth(request.path, excluded)
     if ret_value is False:
