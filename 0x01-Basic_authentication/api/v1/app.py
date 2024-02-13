@@ -17,7 +17,10 @@ auth = None
 
 auth_type = getenv("AUTH_TYPE")
 
-if auth_type:
+if auth_type == 'basic_auth':
+    from api.v1.auth.basic_auth import BasicAuth
+    auth = BasicAuth()
+else:
     from api.v1.auth.auth import Auth
     auth = Auth()
 
@@ -36,8 +39,8 @@ def before_request():
     auth_header = auth.authorization_header(request)
     if auth_header is None:
         abort(401)
-    else:
-        return auth_header
+    # else:
+        # return auth_header
 
     auth_user = auth.current_user(request)
     if auth_user is None:
