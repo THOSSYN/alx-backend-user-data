@@ -80,14 +80,18 @@ class BasicAuth(Auth):
             return None
 
         # Decode the Base64 part to get the user credentials
-        decoded_credentials = self.decode_base64_authorization_header(base64_part)
+        decoded_cre = self.decode_base64_authorization_header(
+                base64_part
+                )
         if decoded_credentials is None:
             return None
 
         # Extract user email and password from decoded credentials
-        user_email, user_pwd = self.extract_user_credentials(decoded_credentials)
+        user_email, user_pwd = self.extract_user_credentials(
+                decoded_credentials
+                )
         if user_email is None or user_pwd is None:
             return None
 
-        # Authenticate and retrieve the User instance based on email and password
+        # Authenticate and retrieve the User instance with email
         return self.user_object_from_credentials(user_email, user_pwd)
