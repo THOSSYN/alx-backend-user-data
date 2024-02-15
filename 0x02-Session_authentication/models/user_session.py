@@ -10,13 +10,13 @@ class UserSession(Base):
         """Instantiate attributes on class object"""
         super().__init__(*args, **kwargs)
 
-        self.user_id = user_id
-        self.session_id = session_id
-
+        self.user_id = kwargs.get('user_id')
+        self.session_id = kwargs.get('session_id')
+        
         # Initialize additional attributes dynamically from args
-        for attr in args:
-            setattr(self, attr, None)
+        # for attr in args:
+            # setattr(self, attr, None)
 
         # Initialize additional attributes from kwargs
-        for k, v in kwargs.items():
-            setattr(self, k, v)
+        # for k, v in kwargs.items():
+            # setattr(self, k, v)
