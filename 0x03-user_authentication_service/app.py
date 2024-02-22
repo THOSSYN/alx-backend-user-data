@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """A flask app"""
-from flask import Flask, jsonify, request, make_response
+from flask import Flask, jsonify, request, abort
 from auth import Auth
+from sqlalchemy.orm.exc import NoResultFound
 
 
 app = Flask(__name__)
@@ -33,15 +34,13 @@ def login():
     email = request.form.get('email')
     password = request.form.get('password')
 
-    found_user = AUTH.find_user_by(email=email)
-
-    if found_user:
+    is_valid = AUTH.valid_login(email=email, password=password)
+    if is_valid:
         sess_id = AUTH.create_session(email)
-        response = make_response({"email": email, "message": "logged in"})
-        return response.set_cookie('session_id', sess_id)
+        response = jsonify({"email": email, "message": "logged in"})
+        response.set_cookie('session_id', sess_id)
         return response
-    else:
-        abort(401)
+    abort(401)
 
 
 if __name__ == '__main__':
