@@ -19,7 +19,7 @@ class DB:
     def __init__(self) -> None:
         """Initialize a new DB instance
         """
-        self._engine = create_engine("sqlite:///a.db", echo=False)
+        self._engine = create_engine("sqlite:///a.db", echo=True)
         Base.metadata.drop_all(self._engine)
         Base.metadata.create_all(self._engine)
         self.__session = None
@@ -68,8 +68,9 @@ class DB:
             setattr(found_user, k, v)
         self._session.commit()
 
-    def _hash_password(self, password: str) -> bytes:
-        """Password-hashing method"""
-        encoded_pwd = password.encode('utf-8')
-        salt_algo = bcrypt.gensalt()
-        return bcrypt.hashpw(encoded_pwd, salt_algo)
+
+def _hash_password(self, password: str) -> bytes:
+    """Password-hashing method"""
+    encoded_pwd = password.encode('utf-8')
+    salt_algo = bcrypt.gensalt()
+    return bcrypt.hashpw(encoded_pwd, salt_algo)
