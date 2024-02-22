@@ -42,7 +42,7 @@ class DB:
             return user
         return None
 
-    def find_user_by(self, **kwargs) -> User :
+    def find_user_by(self, **kwargs) -> User:
         """Filter user by keyword argument(attributes)"""
         try:
             user = self._session.query(User).filter_by(**kwargs).first()
