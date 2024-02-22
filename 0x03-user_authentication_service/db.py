@@ -46,7 +46,13 @@ class DB:
 
     def find_user_by(self, **kwargs): -> User:
         """Find user object using keyword from attribute"""
-        user = self._session.query(User).filter_by(**kwargs).first()
-        if user is None:
-            raise NoResultFound("Not Found")
-        return user
+        try:
+            # filtering is achieved with filter_by, which uses keyword args
+            user = self._session.query(User).filter_by(**kwargs).first()
+            if user is None:
+                raise NoResultFound
+            return user
+        except (NoResultFound) as err:
+            raise err
+        except (InvalidRequestError) as err:
+            raise err
