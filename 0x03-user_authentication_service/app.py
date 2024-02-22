@@ -48,12 +48,24 @@ def logout():
     """Defines an app logout logic"""
     if request.method == 'DELETE':
         sess_id = request.cookies.get("session_id")
-        user_exist = AUTH.get_user_by_session_id(sess_id)
+        user_exist = AUTH.get_user_from_session_id(sess_id)
 
         if user_exist:
             AUTH.destroy_session(user_exist.id)
-            return redirect(url_for('/'))
+            return redirect('/')
         abort(403)
+
+
+@app.route('/profile', strict_slashes=False)
+def profile():
+    """Define a route for getting user's profile"""
+    sess_id = request.cookies.get('session_id')
+
+    user = AUTH.get_user_from_session_id(sess_id)
+
+    if user:
+        return jsonify({"email": f"{user.email}"), 200
+    abort(403)
 
 
 if __name__ == '__main__':
