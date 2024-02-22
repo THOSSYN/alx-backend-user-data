@@ -55,8 +55,9 @@ class Auth:
         """Creates a session"""
         try:
             existing_user = self._db.find_user_by(email=email)
-            sess_id = self._generate_uuid()
-            setattr(existing_user, 'session_id', sess_id)
+            sess_id = _generate_uuid()
+            self._db.update_user(existing_user.id, session_id=sess_id)
+            # setattr(existing_user, 'session_id', sess_id)
             self._db._session.commit()
             return sess_id
         except NoResultFound:
