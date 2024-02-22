@@ -15,7 +15,7 @@ def root():
 
 
 @app.route('/users', methods=['POST'], strict_slashes=False)
-def register_user():
+def users():
     """Defines a user registration portal"""
     user_email = request.form.get('email')
     user_pass = request.form.get('password')
