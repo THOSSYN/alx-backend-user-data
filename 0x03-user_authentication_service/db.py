@@ -44,10 +44,16 @@ class DB:
             return user
         return None
 
-    def find_user_by(self, **kwargs): -> User:
-        """Find user object using keyword from attribute"""
+    def find_user_by(self, **kwargs) -> User:
+        """
+        This method finds a user based on the kwargs parameters passed, and
+        returns the user.
+        A NoResultFound exception is raised if no result is found, while
+        A InvalidRequestError is raised if the query has the wrong arguments.
+        """
         session = self._session
         try:
+            # filtering is achieved with filter_by, which uses keyword args
             user = session.query(User).filter_by(**kwargs).first()
             if user is None:
                 raise NoResultFound
