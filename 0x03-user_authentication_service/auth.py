@@ -41,13 +41,13 @@ class Auth:
 
     def valid_login(self, email: str, password: str) -> bool:
         """Validates login details"""
-        existing_user = self._db.find_user_by(email=email)
-
-        if existing_user:
+        try:
+            existing_user = self._db.find_user_by(email=email)
             encode_pwd = password.encode('utf-8')
             result = bcrypt.checkpw(encode_pwd, existing_user.hashed_password)
             return result
-        return False
+        except NoResultFound:
+            return False
 
     def create_session(self, email: str) -> str:
         """Creates a session"""
