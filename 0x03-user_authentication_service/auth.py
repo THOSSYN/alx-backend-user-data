@@ -40,7 +40,9 @@ class Auth:
             return new_user
 
     def valid_login(self, email: str, password: str) -> bool:
-        """Validates login details"""
+        """Validates users login details
+           Return: True if user exist else False
+        """
         try:
             existing_user = self._db.find_user_by(email=email)
             encode_pwd = password.encode('utf-8')
@@ -51,10 +53,11 @@ class Auth:
 
     def create_session(self, email: str) -> str:
         """Creates a session"""
-        existing_user = self._db.find_user_by(email=email)
-        if existing_user is None:
+        try:
+            existing_user = self._db.find_user_by(email=email)
+            sess_id = self._generate_uuid()
+            setattr(existing_user, 'session_id', sess_id)
+            self._db._session.commit()
+            return sess_id
+        except NoResultFound:
             return None
-        sess_id = self._generate_uuid()
-        setattr(existing_user, 'session_id', sess_id)
-        self._db._session.commit()
-        return sess_id
