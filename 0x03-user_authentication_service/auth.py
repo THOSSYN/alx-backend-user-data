@@ -14,12 +14,14 @@ class Auth:
         self._db = DB()
 
     def register_user(self, email: str, password: str) -> User:
-        """User registration"""
+        """User registration for new user
+           Return: User instance
+        """
         try:
             existing_user = self._db.find_user_by(email=email)
 
-            if existing_user is not None:
-                raise ValueError(f"User {email} already exists")
+            # if existing_user is not None:
+            raise ValueError(f"User {email} already exists")
         except NoResultFound:
             hashed_password = _hash_password(password)
             self._db.add_user(email, hashed_password)
