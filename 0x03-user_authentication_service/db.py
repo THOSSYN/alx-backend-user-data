@@ -5,9 +5,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
+from user import Base, User
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import InvalidRequestError
-from user import Base, User
 
 
 class DB:
@@ -46,9 +46,9 @@ class DB:
 
     def find_user_by(self, **kwargs): -> User:
         """Find user object using keyword from attribute"""
+        session = self._session
         try:
-            # filtering is achieved with filter_by, which uses keyword args
-            user = self._session.query(User).filter_by(**kwargs).first()
+            user = session.query(User).filter_by(**kwargs).first()
             if user is None:
                 raise NoResultFound
             return user
