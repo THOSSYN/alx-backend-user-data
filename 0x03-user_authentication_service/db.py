@@ -36,9 +36,17 @@ class DB:
             hashed_password: str
             ) -> User:
         """Add a user to the database"""
-        user = User(email=email, hashed_password=hashed_password)
-        if user:
-            self._session.add(user)
-            self._session.commit()
+        if email and hashed_password:
+            user = User(email=email, hashed_password=hashed_password)
+            session = self._session
+            session.add(user)
+            session.commit()
+
             return user
         return None
+        # user = User(email=email, hashed_password=hashed_password)
+        # if user:
+            # self._session.add(user)
+            # self._session.commit()
+            # return user
+        # return None
