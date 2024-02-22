@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """A flask app"""
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, redirect, url_for
 from auth import Auth
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -41,6 +41,19 @@ def login():
         response.set_cookie('session_id', sess_id)
         return response
     abort(401)
+
+
+@app.route('/session', methods=["DELETE"], strict_slashes=False)
+def logout():
+    """Defines an app logout logic"""
+    if request.method == 'DELETE':
+        sess_id = request.cookies.get("session_id")
+        user_exist = AUTH.get_user_by_session_id(sess_id)
+
+        if user_exist:
+            AUTH.destroy_session(user_exist.id)
+            return redirect(url_for('/'))
+        abort(403)
 
 
 if __name__ == '__main__':
