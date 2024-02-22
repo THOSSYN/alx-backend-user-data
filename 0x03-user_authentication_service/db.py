@@ -44,15 +44,15 @@ class DB:
 
     def find_user_by(self, **kwargs) -> str:
         """Filter user by keyword argument(attributes)"""
-        try:
-            user = self._session.query(User).filter_by(**kwargs).first()
-            if user is None:
-                raise NoResultFound
-            return user
-        except InvalidRequestError as e:
-            raise e
-        except NoResultFound as e:
-            raise e
+        # try:
+        user = self._session.query(User).filter_by(**kwargs).first()
+        # if user is None:
+            # raise NoResultFound
+        return user
+        # except InvalidRequestError as e:
+            # raise e
+        # except NoResultFound as e:
+            # raise e
 
     def update_user(self, user_id: str, **kwargs) -> None:
         """Update a user object"""
