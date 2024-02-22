@@ -37,6 +37,6 @@ class DB:
             ) -> User:
         """Add a user to the database"""
         user = User(email, hashed_password)
-        seld.__session.add(user)
+        self.__session.add(user)
         self.__session.commit()
         return user
