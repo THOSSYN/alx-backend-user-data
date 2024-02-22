@@ -37,8 +37,15 @@ class SessionAuth(Auth):
         """Deletes user session id"""
         if request is None:
             return False
-        if id not in request.args:
+
+        sess_cooky_id = super().session_cookie(request)
+        if sess_cooky_id is None:
             return False
-        sess_id = self.user_id_for_session_id()
+        sess_id = self.user_id_for_session_id(sess_cooky_id)
         if sess_id is None:
             return False
+
+	# user = User.get(sess_id)
+
+        del self.user_id_by_session_id[sess_cooky_id]
+        return True

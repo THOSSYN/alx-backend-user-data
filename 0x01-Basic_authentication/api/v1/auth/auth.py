@@ -25,6 +25,9 @@ class Auth:
         for exc_path in excluded_paths:
             if fnmatch.fnmatch(path, exc_path):
                 return False
+            # allows '*' wildcard in excluded_paths
+            if exc_path.endswith('*') and fnmatch.fnmatch(path, exc_path):
+                return False
         return True
 
     def authorization_header(self, request=None) -> str:
