@@ -30,42 +30,63 @@ def users():
 
 @app.route('/sessions', methods=['POST'], strict_slashes=False)
 def login():
-    """Defines a login route"""
+    """
+    This Method validates login and sends the session_id as cookie.
+    """
     email = request.form.get('email')
     password = request.form.get('password')
+    log_stat = AUTH.valid_login(email, password)
 
-    is_valid = AUTH.valid_login(email=email, password=password)
-    if is_valid:
-        sess_id = AUTH.create_session(email)
+    if log_stat:
+        session_id = AUTH.create_session(email)
         response = jsonify({"email": email, "message": "logged in"})
-        response.set_cookie('session_id', sess_id)
+        response.set_cookie("session_id", session_id)
         return response
+
     abort(401)
 
 
-@app.route('/sessions', methods=["DELETE"], strict_slashes=False)
+@app.route('/sessions', methods=['DELETE'], strict_slashes=False)
 def logout():
-    """Defines an app logout logic"""
-    if request.method == 'DELETE':
-        sess_id = request.cookies.get("session_id")
-        user_exist = AUTH.get_user_from_session_id(sess_id)
-
-        if user_exist:
-            AUTH.destroy_session(user_exist.id)
-            return redirect('/')
-        abort(403)
-
-
-@app.route('/profile', strict_slashes=False)
-def profile():
-    """Define a route for getting user's profile"""
-    sess_id = request.cookies.get('session_id')
-
-    user = AUTH.get_user_from_session_id(sess_id)
-
+    """
+    This method resolves the logout request and invalidates
+    the session_id of the user.
+    """
+    session_id = request.cookies.get('session_id')
+    user = AUTH.get_user_from_session_id(session_id)
     if user:
-        return jsonify({"email": f"{user.email}"), 200
+        AUTH.destroy_session(user.id)
+        return redirect('/')
+        # return redirect(url_for('home'))
     abort(403)
+
+
+@app.route('/profile', methods=['GET'], strict_slashes=False)
+def profile():
+    """
+    This function resolves the request to find a user.
+    """
+    session_id = request.cookies.get('session_id')
+    user = AUTH.get_user_from_session_id(session_id)
+    if user:
+        response = jsonify({"email": user.email})
+        return response, 200
+    abort(403)
+
+
+@app.route('/reset_password', methods=['POST'], strict_slashes=False)
+def get_reset_password_token():
+    """A route for getting reset token
+    """
+    email = request.form.get('email')
+    if email:
+        try:
+            reset_token = AUTH.get_reset_password_token(email)
+            if reset_token:
+                return jsonify({"email": email, "reset_token": reset_token})
+            abort(403)
+        except ValueError:
+            abort(403)
 
 
 if __name__ == '__main__':
