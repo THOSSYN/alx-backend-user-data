@@ -42,7 +42,7 @@ class DB:
             return user
         return None
 
-    def find_user_by(self, **kwargs) -> str:
+    def find_user_by(self, **kwargs) -> User :
         """Filter user by keyword argument(attributes)"""
         try:
             user = self._session.query(User).filter_by(**kwargs).first()
@@ -54,17 +54,17 @@ class DB:
         except (NoResultFound) as err:
             raise err
 
-    def update_user(self, user_id: str, **kwargs) -> None:
+    def update_user(self, user_id: int, **kwargs) -> None:
         """Update a user object"""
         found_user = self.find_user_by(id=user_id)
         if not found_user:
             return None
         if not kwargs:
-            raise ValueError("Attribute does not exist")
+            raise ValueError
 
         for k, v in kwargs.items():
             if not hasattr(found_user, k):
-                raise ValueError(f"Attribute {k} does not exist")
+                raise ValueError
             setattr(found_user, k, v)
         self._session.commit()
 
