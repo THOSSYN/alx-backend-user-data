@@ -7,6 +7,18 @@ import uuid
 from sqlalchemy.orm.exc import NoResultFound
 
 
+def _hash_password(password: str) -> bytes:
+    """Password hashing logic"""
+    encoded_pwd = password.encode('utf-8')
+    salt_algo = bcrypt.gensalt()
+    return bcrypt.hashpw(encoded_pwd, salt_algo)
+
+
+def _generate_uuid(self) -> str:
+    """Generates a uuid identification"""
+    return str(uuid.uuid4())
+
+
 class Auth:
     """Auth class to interact with the authentication database."""
 
@@ -20,12 +32,10 @@ class Auth:
         try:
             existing_user = self._db.find_user_by(email=email)
 
-            # if existing_user is not None:
             raise ValueError(f"User {email} already exists")
         except NoResultFound:
             hashed_password = _hash_password(password)
             new_user = self._db.add_user(email, hashed_password)
-            # new_user = User(email=email, hashed_password=hashed_password)
 
             return new_user
 
@@ -39,10 +49,6 @@ class Auth:
             return result
         return False
 
-    def _generate_uuid(self) -> str:
-        """Generates a uuid identification"""
-        return str(uuid.uuid4())
-
     def create_session(self, email: str) -> str:
         """Creates a session"""
         existing_user = self._db.find_user_by(email=email)
@@ -52,10 +58,3 @@ class Auth:
         setattr(existing_user, 'session_id', sess_id)
         self._db._session.commit()
         return sess_id
-
-
-def _hash_password(password: str) -> bytes:
-    """Password hashing logic"""
-    encoded_pwd = password.encode('utf-8')
-    salt_algo = bcrypt.gensalt()
-    return bcrypt.hashpw(encoded_pwd, salt_algo)
