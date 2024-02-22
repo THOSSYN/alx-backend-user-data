@@ -25,12 +25,6 @@ class Auth:
 
         return new_user
 
-    def _hash_password(self, password: str) -> bytes:
-        """Password-hashing method"""
-        encoded_pwd = password.encode('utf-8')
-        salt_algo = bcrypt.gensalt()
-        return bcrypt.hashpw(encoded_pwd, salt_algo)
-
     def valid_login(self, email: str, password: str) -> bool:
         """Validates login details"""
         existing_user = self._db.find_user_by(email=email)
@@ -54,3 +48,10 @@ class Auth:
         setattr(existing_user, 'session_id', sess_id)
         self._db._session.commit()
         return sess_id
+
+
+def _hash_password(password: str) -> bytes:
+    """Password hashing logic"""
+    encoded_pwd = password.encode('utf-8')
+    salt_algo = bcrypt.gensalt()
+    return bcrypt.hashpw(encoded_pwd, salt_algo)
